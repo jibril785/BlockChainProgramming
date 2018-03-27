@@ -1,0 +1,59 @@
+pragma solidity ^0.4.18;
+
+contract voteBallonDor
+{
+
+    struct Joueur {
+        uint voteCount;
+        string nom_joueur;
+    }
+    
+    //variable
+    address public owner;
+   mapping(address => uint) public votants;
+   Joueur[] public joueurs;
+
+    //Modifier et event
+    modifier isowner(){
+        if(msg.sender!=owner){
+            revert();
+            _;
+        }
+    
+    }
+
+    //Constructeur
+    function vote() public {
+        owner=msg.sender;
+    }
+    
+    function ajout_votants(string _votant) public {
+        votants[msg.sender]=1;
+    }
+    
+    function ajout_joueurs(string _joueurs) public {
+        joueurs.push(Joueur({
+                nom_joueur: _joueurs,
+                voteCount: 0
+        }));
+    }
+    
+    function voter(uint _indicejoueurs) public{
+        if (votants[msg.sender]==1)
+        {
+        joueurs[_indicejoueurs].voteCount+=1;
+        votants[msg.sender]--;
+        }
+        else
+        {
+            "Vous avez déjà voté ";
+        }
+    }
+    
+    
+    //Functions
+    function kill() isowner(){
+        delete owner;
+        selfdestruct(msg.sender);
+    }
+}
